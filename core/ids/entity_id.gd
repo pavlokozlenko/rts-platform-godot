@@ -3,7 +3,7 @@ extends RefCounted
 
 
 const INVALID_INDEX: int = -1
-const INVALID_GENERATION: int = -1
+const INVALID_GENERATION: int = 0
 
 
 var index: int
@@ -23,7 +23,7 @@ func _init(
 
 
 func is_valid() -> bool:
-	return index >= 0 and generation >= 0
+	return index >= 0 and generation > INVALID_GENERATION
 
 
 func equals(other: EntityId) -> bool:
