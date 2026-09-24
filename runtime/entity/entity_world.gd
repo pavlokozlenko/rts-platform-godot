@@ -60,6 +60,19 @@ func replace_component(
 	)
 
 
+func has_component(
+	entity_id: EntityId,
+	component_script: Script
+) -> bool:
+	if not is_alive(entity_id):
+		return false
+
+	return component_storage.has(
+		entity_id,
+		component_script
+	)
+
+
 func get_component(
 	entity_id: EntityId,
 	component_script: Script
