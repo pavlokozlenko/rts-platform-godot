@@ -76,4 +76,8 @@ Projects should be able to extend the platform with custom data, maps, assets, s
 
 The platform should target desktop operating systems supported by Godot, with particular attention to Linux and Windows.
 
-###
+### 3.9 Maintainable
+
+The architecture should favor clear boundaries between systems over short-term implementation convenience.
+
+Temporary prototypes must not become permanent dependencies of the core architecture.
