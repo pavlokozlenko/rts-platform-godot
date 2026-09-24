@@ -119,6 +119,51 @@ func _init() -> void:
 		"Health query must not contain the second entity."
 	)
 
+	var required_components: Array[Script] = [
+		TRANSFORM_COMPONENT_SCRIPT,
+		HEALTH_COMPONENT_SCRIPT
+	]
+
+	var transform_and_health_entities: Array[EntityId] = (
+		world.get_entities_with_all(
+			required_components
+		)
+	)
+
+	assert(
+		transform_and_health_entities.size() == 1,
+		"Multi-component query must return only entities with both components."
+	)
+
+	assert(
+		_contains_entity(
+			transform_and_health_entities,
+			first_entity
+		),
+		"Multi-component query must contain the first entity."
+	)
+
+	assert(
+		not _contains_entity(
+			transform_and_health_entities,
+			second_entity
+		),
+		"Multi-component query must exclude the second entity."
+	)
+
+	var empty_components: Array[Script] = []
+
+	var empty_component_query: Array[EntityId] = (
+		world.get_entities_with_all(
+			empty_components
+		)
+	)
+
+	assert(
+		empty_component_query.is_empty(),
+		"Multi-component query with no required components must return no entities."
+	)
+
 	assert(
 		world.remove_component(
 			first_entity,
@@ -134,6 +179,15 @@ func _init() -> void:
 	assert(
 		health_entities.is_empty(),
 		"Removed HealthComponent must disappear from queries."
+	)
+
+	transform_and_health_entities = world.get_entities_with_all(
+		required_components
+	)
+
+	assert(
+		transform_and_health_entities.is_empty(),
+		"Multi-component query must update after component removal."
 	)
 
 	assert(

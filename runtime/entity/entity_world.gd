@@ -94,3 +94,34 @@ func get_entities_with(
 			result.append(entity_id)
 
 	return result
+
+
+func get_entities_with_all(
+	component_scripts: Array[Script]
+) -> Array[EntityId]:
+	var result: Array[EntityId] = []
+
+	if component_scripts.is_empty():
+		return result
+
+	var candidate_entities: Array[EntityId] = (
+		get_entities_with(component_scripts[0])
+	)
+
+	for entity_id in candidate_entities:
+		var has_all_components := true
+
+		for index in range(1, component_scripts.size()):
+			var component_script: Script = component_scripts[index]
+
+			if not component_storage.has(
+				entity_id,
+				component_script
+			):
+				has_all_components = false
+				break
+
+		if has_all_components:
+			result.append(entity_id)
+
+	return result
