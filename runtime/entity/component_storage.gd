@@ -100,6 +100,28 @@ func get_component(
 	return entity_components[component_key]
 
 
+func _get_entity_keys_with(
+	component_script: Script
+) -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+
+	if component_script == null:
+		return result
+
+	var component_key := component_script.resource_path
+
+	if component_key.is_empty():
+		return result
+
+	for entity_key in _components:
+		var entity_components: Dictionary = _components[entity_key]
+
+		if entity_components.has(component_key):
+			result.append(entity_key)
+
+	return result
+
+
 func remove_all(entity_id: EntityId) -> bool:
 	if entity_id == null or not entity_id.is_valid():
 		return false

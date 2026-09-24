@@ -71,3 +71,26 @@ func remove_component(
 		entity_id,
 		component_script
 	)
+
+
+func get_entities_with(
+	component_script: Script
+) -> Array[EntityId]:
+	var result: Array[EntityId] = []
+
+	var entity_keys: Array[Vector2i] = (
+		component_storage._get_entity_keys_with(
+			component_script
+		)
+	)
+
+	for entity_key in entity_keys:
+		var entity_id: EntityId = EntityId.new(
+			entity_key.x,
+			entity_key.y
+		)
+
+		if entity_manager.is_alive(entity_id):
+			result.append(entity_id)
+
+	return result
