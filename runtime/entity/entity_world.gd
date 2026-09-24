@@ -35,3 +35,39 @@ func destroy_entity(entity_id: EntityId) -> bool:
 
 func is_alive(entity_id: EntityId) -> bool:
 	return entity_manager.is_alive(entity_id)
+
+
+func add_component(
+	entity_id: EntityId,
+	component: RefCounted
+) -> bool:
+	if not is_alive(entity_id):
+		return false
+
+	return component_storage.add(entity_id, component)
+
+
+func get_component(
+	entity_id: EntityId,
+	component_script: Script
+) -> RefCounted:
+	if not is_alive(entity_id):
+		return null
+
+	return component_storage.get_component(
+		entity_id,
+		component_script
+	)
+
+
+func remove_component(
+	entity_id: EntityId,
+	component_script: Script
+) -> bool:
+	if not is_alive(entity_id):
+		return false
+
+	return component_storage.remove(
+		entity_id,
+		component_script
+	)

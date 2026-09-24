@@ -33,29 +33,65 @@ func _init() -> void:
 	var health: RefCounted = HEALTH_COMPONENT_SCRIPT.new(500.0)
 
 	assert(
-		world.component_storage.add(entity_id, transform),
-		"Adding TransformComponent must succeed."
+		world.add_component(entity_id, transform),
+		"Adding TransformComponent through EntityWorld must succeed."
 	)
 
 	assert(
-		world.component_storage.add(entity_id, health),
-		"Adding HealthComponent must succeed."
+		world.add_component(entity_id, health),
+		"Adding HealthComponent through EntityWorld must succeed."
+	)
+
+	var retrieved_transform: RefCounted = world.get_component(
+		entity_id,
+		TRANSFORM_COMPONENT_SCRIPT
 	)
 
 	assert(
-		world.component_storage.has(
-			entity_id,
-			TRANSFORM_COMPONENT_SCRIPT
-		),
-		"Entity must contain its TransformComponent."
+		retrieved_transform == transform,
+		"EntityWorld must return the stored TransformComponent."
+	)
+
+	var retrieved_health: RefCounted = world.get_component(
+		entity_id,
+		HEALTH_COMPONENT_SCRIPT
 	)
 
 	assert(
-		world.component_storage.has(
+		retrieved_health == health,
+		"EntityWorld must return the stored HealthComponent."
+	)
+
+	assert(
+		world.remove_component(
 			entity_id,
 			HEALTH_COMPONENT_SCRIPT
 		),
-		"Entity must contain its HealthComponent."
+		"Removing HealthComponent through EntityWorld must succeed."
+	)
+
+	assert(
+		world.get_component(
+			entity_id,
+			HEALTH_COMPONENT_SCRIPT
+		) == null,
+		"Removed HealthComponent must no longer be accessible."
+	)
+
+	assert(
+		world.get_component(
+			entity_id,
+			TRANSFORM_COMPONENT_SCRIPT
+		) == transform,
+		"Removing HealthComponent must not remove TransformComponent."
+	)
+
+	assert(
+		world.remove_component(
+			entity_id,
+			HEALTH_COMPONENT_SCRIPT
+		) == false,
+		"Removing an already removed component must fail."
 	)
 
 	assert(
@@ -69,35 +105,19 @@ func _init() -> void:
 	)
 
 	assert(
-		not world.component_storage.has(
-			entity_id,
-			TRANSFORM_COMPONENT_SCRIPT
-		),
-		"Destroying an entity must remove its TransformComponent."
-	)
-
-	assert(
-		not world.component_storage.has(
-			entity_id,
-			HEALTH_COMPONENT_SCRIPT
-		),
-		"Destroying an entity must remove its HealthComponent."
-	)
-
-	assert(
-		world.component_storage.get_component(
+		world.get_component(
 			entity_id,
 			TRANSFORM_COMPONENT_SCRIPT
 		) == null,
-		"Destroyed entity's TransformComponent must no longer be retrievable."
+		"Destroyed entity's TransformComponent must no longer be accessible."
 	)
 
 	assert(
-		world.component_storage.get_component(
+		world.remove_component(
 			entity_id,
-			HEALTH_COMPONENT_SCRIPT
-		) == null,
-		"Destroyed entity's HealthComponent must no longer be retrievable."
+			TRANSFORM_COMPONENT_SCRIPT
+		) == false,
+		"Removing a component from a destroyed entity must fail."
 	)
 
 	assert(
