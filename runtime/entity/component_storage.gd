@@ -31,6 +31,32 @@ func add(entity_id: EntityId, component: RefCounted) -> bool:
 	return true
 
 
+func replace(entity_id: EntityId, component: RefCounted) -> bool:
+	if entity_id == null or not entity_id.is_valid():
+		return false
+
+	if component == null:
+		return false
+
+	var entity_key := entity_id.to_key()
+	var component_key := _get_component_key(component)
+
+	if component_key.is_empty():
+		return false
+
+	if not _components.has(entity_key):
+		return false
+
+	var entity_components: Dictionary = _components[entity_key]
+
+	if not entity_components.has(component_key):
+		return false
+
+	entity_components[component_key] = component
+
+	return true
+
+
 func remove(
 	entity_id: EntityId,
 	component_script: Script
