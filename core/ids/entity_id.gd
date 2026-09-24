@@ -33,5 +33,9 @@ func equals(other: EntityId) -> bool:
 	return index == other.index and generation == other.generation
 
 
+func to_key() -> Vector2i:
+	return Vector2i(index, generation)
+
+
 func _to_string() -> String:
 	return "EntityId(%d, %d)" % [index, generation]

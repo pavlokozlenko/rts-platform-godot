@@ -8,9 +8,20 @@ func _init() -> void:
 	var zero_generation := EntityId.new(10, 0)
 	var invalid_id := EntityId.invalid()
 
-	assert(first_id.is_valid(), "A positive generation must produce a valid EntityId.")
-	assert(same_id.is_valid(), "A positive generation must produce a valid EntityId.")
-	assert(different_generation.is_valid(), "A positive generation must produce a valid EntityId.")
+	assert(
+		first_id.is_valid(),
+		"A positive generation must produce a valid EntityId."
+	)
+
+	assert(
+		same_id.is_valid(),
+		"A positive generation must produce a valid EntityId."
+	)
+
+	assert(
+		different_generation.is_valid(),
+		"A positive generation must produce a valid EntityId."
+	)
 
 	assert(
 		not zero_generation.is_valid(),
@@ -30,6 +41,16 @@ func _init() -> void:
 	assert(
 		not first_id.equals(different_generation),
 		"EntityIds with different generations must not be equal."
+	)
+
+	assert(
+		first_id.to_key() == same_id.to_key(),
+		"Equivalent EntityIds must produce the same key."
+	)
+
+	assert(
+		first_id.to_key() != different_generation.to_key(),
+		"Different generations must produce different keys."
 	)
 
 	print("EntityId tests passed.")
