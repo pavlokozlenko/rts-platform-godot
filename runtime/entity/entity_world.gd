@@ -28,7 +28,7 @@ func destroy_entity(entity_id: EntityId) -> bool:
 	if not entity_manager.destroy_entity(entity_id):
 		return false
 
-	component_storage.remove(entity_id)
+	component_storage.remove_all(entity_id)
 
 	return true
 

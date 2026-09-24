@@ -5,14 +5,13 @@ const COMPONENT_STORAGE_SCRIPT: Script = preload(
 	"res://runtime/entity/component_storage.gd"
 )
 
+const TRANSFORM_COMPONENT_SCRIPT: Script = preload(
+	"res://runtime/entity/components/transform.gd"
+)
 
-class TestComponent:
-	extends RefCounted
-
-	var value: int
-
-	func _init(component_value: int) -> void:
-		value = component_value
+const HEALTH_COMPONENT_SCRIPT: Script = preload(
+	"res://runtime/entity/components/health.gd"
+)
 
 
 func _init() -> void:
@@ -22,62 +21,129 @@ func _init() -> void:
 	var same_entity_id := EntityId.new(10, 1)
 	var different_entity_id := EntityId.new(10, 2)
 
-	var component := TestComponent.new(123)
+	var transform: RefCounted = TRANSFORM_COMPONENT_SCRIPT.new(
+		Vector3(10.0, 20.0, 30.0)
+	)
+
+	var health: RefCounted = HEALTH_COMPONENT_SCRIPT.new(250.0)
 
 	assert(
-		storage.add(entity_id, component),
-		"Adding a component to an empty storage must succeed."
+		storage.add(entity_id, transform),
+		"Adding a TransformComponent must succeed."
 	)
 
 	assert(
-		storage.has(entity_id),
-		"Storage must contain a component after adding it."
+		storage.has(entity_id, TRANSFORM_COMPONENT_SCRIPT),
+		"Storage must contain the TransformComponent."
 	)
 
 	assert(
-		storage.has(same_entity_id),
+		storage.has(same_entity_id, TRANSFORM_COMPONENT_SCRIPT),
 		"Equivalent EntityIds must refer to the same component."
 	)
 
 	assert(
-		not storage.has(different_entity_id),
+		not storage.has(
+			different_entity_id,
+			TRANSFORM_COMPONENT_SCRIPT
+		),
 		"Different generations must refer to different entities."
 	)
 
-	var retrieved_component: RefCounted = storage.get_component(entity_id)
-
-	assert(
-		retrieved_component == component,
-		"get_component() must return the stored component."
+	var retrieved_transform: RefCounted = storage.get_component(
+		entity_id,
+		TRANSFORM_COMPONENT_SCRIPT
 	)
 
 	assert(
-		storage.add(entity_id, TestComponent.new(456)) == false,
-		"Adding a second component to the same storage slot must fail."
+		retrieved_transform == transform,
+		"get_component() must return the stored TransformComponent."
+	)
+
+	var duplicate_transform: RefCounted = (
+		TRANSFORM_COMPONENT_SCRIPT.new()
 	)
 
 	assert(
-		storage.remove(entity_id),
-		"Removing an existing component must succeed."
+		storage.add(entity_id, duplicate_transform) == false,
+		"Adding the same component type twice must fail."
 	)
 
 	assert(
-		not storage.has(entity_id),
-		"Storage must not contain the component after removal."
+		storage.add(entity_id, health),
+		"An entity must be able to have a HealthComponent."
 	)
 
 	assert(
-		storage.get_component(entity_id) == null,
-		"get_component() must return null after removal."
+		storage.has(entity_id, HEALTH_COMPONENT_SCRIPT),
+		"Storage must contain the HealthComponent."
+	)
+
+	var retrieved_health: RefCounted = storage.get_component(
+		entity_id,
+		HEALTH_COMPONENT_SCRIPT
 	)
 
 	assert(
-		storage.remove(entity_id) == false,
-		"Removing a component that does not exist must fail."
+		retrieved_health == health,
+		"get_component() must return the stored HealthComponent."
 	)
 
 	assert(
-		storage.add(EntityId.invalid(), TestComponent.new(789)) == false,
+		retrieved_health.maximum == 250.0,
+		"Stored HealthComponent maximum must be preserved."
+	)
+
+	assert(
+		storage.remove(
+			entity_id,
+			HEALTH_COMPONENT_SCRIPT
+		),
+		"Removing HealthComponent must succeed."
+	)
+
+	assert(
+		not storage.has(
+			entity_id,
+			HEALTH_COMPONENT_SCRIPT
+		),
+		"Removed HealthComponent must no longer exist."
+	)
+
+	assert(
+		storage.has(
+			entity_id,
+			TRANSFORM_COMPONENT_SCRIPT
+		),
+		"Removing one component must not remove other components."
+	)
+
+	assert(
+		storage.remove_all(entity_id),
+		"Removing all components must succeed."
+	)
+
+	assert(
+		not storage.has(
+			entity_id,
+			TRANSFORM_COMPONENT_SCRIPT
+		),
+		"All components must be removed."
+	)
+
+	assert(
+		not storage.has(
+			entity_id,
+			HEALTH_COMPONENT_SCRIPT
+		),
+		"All components must be removed."
+	)
+
+	assert(
+		storage.add(
+			EntityId.invalid(),
+			TRANSFORM_COMPONENT_SCRIPT.new()
+		) == false,
 		"Invalid EntityIds must not be accepted."
 	)
 

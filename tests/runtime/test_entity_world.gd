@@ -9,6 +9,10 @@ const TRANSFORM_COMPONENT_SCRIPT: Script = preload(
 	"res://runtime/entity/components/transform.gd"
 )
 
+const HEALTH_COMPONENT_SCRIPT: Script = preload(
+	"res://runtime/entity/components/health.gd"
+)
+
 
 func _init() -> void:
 	var world: RefCounted = ENTITY_WORLD_SCRIPT.new()
@@ -26,14 +30,32 @@ func _init() -> void:
 		Vector3.ONE
 	)
 
+	var health: RefCounted = HEALTH_COMPONENT_SCRIPT.new(500.0)
+
 	assert(
 		world.component_storage.add(entity_id, transform),
-		"Adding a TransformComponent must succeed."
+		"Adding TransformComponent must succeed."
 	)
 
 	assert(
-		world.component_storage.has(entity_id),
-		"EntityWorld must contain the entity's component."
+		world.component_storage.add(entity_id, health),
+		"Adding HealthComponent must succeed."
+	)
+
+	assert(
+		world.component_storage.has(
+			entity_id,
+			TRANSFORM_COMPONENT_SCRIPT
+		),
+		"Entity must contain its TransformComponent."
+	)
+
+	assert(
+		world.component_storage.has(
+			entity_id,
+			HEALTH_COMPONENT_SCRIPT
+		),
+		"Entity must contain its HealthComponent."
 	)
 
 	assert(
@@ -47,13 +69,35 @@ func _init() -> void:
 	)
 
 	assert(
-		not world.component_storage.has(entity_id),
-		"Destroying an entity must remove its component."
+		not world.component_storage.has(
+			entity_id,
+			TRANSFORM_COMPONENT_SCRIPT
+		),
+		"Destroying an entity must remove its TransformComponent."
 	)
 
 	assert(
-		world.component_storage.get_component(entity_id) == null,
-		"Destroyed entity's component must no longer be retrievable."
+		not world.component_storage.has(
+			entity_id,
+			HEALTH_COMPONENT_SCRIPT
+		),
+		"Destroying an entity must remove its HealthComponent."
+	)
+
+	assert(
+		world.component_storage.get_component(
+			entity_id,
+			TRANSFORM_COMPONENT_SCRIPT
+		) == null,
+		"Destroyed entity's TransformComponent must no longer be retrievable."
+	)
+
+	assert(
+		world.component_storage.get_component(
+			entity_id,
+			HEALTH_COMPONENT_SCRIPT
+		) == null,
+		"Destroyed entity's HealthComponent must no longer be retrievable."
 	)
 
 	assert(
