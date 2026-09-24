@@ -37,12 +37,18 @@ func _init() -> void:
 	)
 
 	assert(
-		transform_storage.has(entity_id),
+		transform_storage.has(
+			entity_id,
+			TRANSFORM_COMPONENT_SCRIPT
+		),
 		"Transform storage must contain the entity."
 	)
 
 	var retrieved_transform: RefCounted = (
-		transform_storage.get_component(entity_id)
+		transform_storage.get_component(
+			entity_id,
+			TRANSFORM_COMPONENT_SCRIPT
+		)
 	)
 
 	assert(
@@ -66,17 +72,26 @@ func _init() -> void:
 	)
 
 	assert(
-		transform_storage.remove(entity_id),
+		transform_storage.remove(
+			entity_id,
+			TRANSFORM_COMPONENT_SCRIPT
+		),
 		"Removing the TransformComponent must succeed."
 	)
 
 	assert(
-		not transform_storage.has(entity_id),
+		not transform_storage.has(
+			entity_id,
+			TRANSFORM_COMPONENT_SCRIPT
+		),
 		"Entity must no longer have a TransformComponent."
 	)
 
 	assert(
-		transform_storage.get_component(entity_id) == null,
+		transform_storage.get_component(
+			entity_id,
+			TRANSFORM_COMPONENT_SCRIPT
+		) == null,
 		"Removed TransformComponent must no longer be retrievable."
 	)
 

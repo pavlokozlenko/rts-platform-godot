@@ -60,19 +60,19 @@ func _init() -> void:
 		"get_component() must return the stored TransformComponent."
 	)
 
-	var transform_entities: Array[Vector2i] = (
-		storage.get_entities_with(
+	var transform_entity_keys: Array[Vector2i] = (
+		storage._get_entity_keys_with(
 			TRANSFORM_COMPONENT_SCRIPT
 		)
 	)
 
 	assert(
-		transform_entities.size() == 1,
+		transform_entity_keys.size() == 1,
 		"Exactly one entity must have a TransformComponent."
 	)
 
 	assert(
-		transform_entities[0] == entity_id.to_key(),
+		transform_entity_keys[0] == entity_id.to_key(),
 		"Query must return the correct entity key."
 	)
 
@@ -105,19 +105,24 @@ func _init() -> void:
 		"get_component() must return the stored HealthComponent."
 	)
 
-	var health_entities: Array[Vector2i] = (
-		storage.get_entities_with(
+	assert(
+		retrieved_health.maximum == 250.0,
+		"Stored HealthComponent maximum must be preserved."
+	)
+
+	var health_entity_keys: Array[Vector2i] = (
+		storage._get_entity_keys_with(
 			HEALTH_COMPONENT_SCRIPT
 		)
 	)
 
 	assert(
-		health_entities.size() == 1,
+		health_entity_keys.size() == 1,
 		"Exactly one entity must have a HealthComponent."
 	)
 
 	assert(
-		health_entities[0] == entity_id.to_key(),
+		health_entity_keys[0] == entity_id.to_key(),
 		"Health query must return the correct entity key."
 	)
 
@@ -145,14 +150,14 @@ func _init() -> void:
 		"Removing one component must not remove other components."
 	)
 
-	var health_entities_after_remove: Array[Vector2i] = (
-		storage.get_entities_with(
+	var health_entity_keys_after_remove: Array[Vector2i] = (
+		storage._get_entity_keys_with(
 			HEALTH_COMPONENT_SCRIPT
 		)
 	)
 
 	assert(
-		health_entities_after_remove.is_empty(),
+		health_entity_keys_after_remove.is_empty(),
 		"Removed HealthComponent must no longer appear in queries."
 	)
 
@@ -177,14 +182,14 @@ func _init() -> void:
 		"All components must be removed."
 	)
 
-	var transform_entities_after_remove: Array[Vector2i] = (
-		storage.get_entities_with(
+	var transform_entity_keys_after_remove: Array[Vector2i] = (
+		storage._get_entity_keys_with(
 			TRANSFORM_COMPONENT_SCRIPT
 		)
 	)
 
 	assert(
-		transform_entities_after_remove.is_empty(),
+		transform_entity_keys_after_remove.is_empty(),
 		"Removed entity must no longer appear in queries."
 	)
 
